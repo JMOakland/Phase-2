@@ -7,7 +7,7 @@ const initialState = {
 };
 //deleter (not final position)
 export function deleteNote(action) {
-    const title = action.noteTitle;
+    
     //add for loop that makes the new noteArray out all the notes before and after.
 
 }
@@ -17,44 +17,25 @@ export const noteSlice = createSlice({
     name: "noteData",
     initialState,
     reducers: {
-        setNoteState: (state, action) => {
+        setNoteContents: (state, action) => {
             state.noteContents = action.payload;
+            //console.log(state.noteContents)
             
         },
-        setNoeTitle: (state, action) => {
-            state.noteTitle = action.payload;
-            
+        setNoteTitle: (state, action) => {
+            state.noteTitle = action.payload; // try this way then use action.noteTitle
+            //console.log(state.noteTitle)
         },
         setNoteArray: (state, action) => {
-            
-                state.noteArray = [
-                    state, {
-                        noteContents : action.noteContents,
-                        noteTitle: action.noteTitle,
-                    }
-                ]
-        
+            state.noteArray = action.payload;
+               
+                    
         
     },
-    },});
-//action 
-export function addnote(note, title){
-    return {
-        noteContents: note,
-        noteTitle: title,
-    }
-}
-export function addtitle(action){
-    return {
-        noteTitle: action
-    }
-}
+    }});
+export const { setNoteContents, setNoteTitle, setNoteArray } = noteSlice.actions
 //setter functions
-export function setNoteTitle(state = state, title) {
-    state.noteTitle = title
-    
-    
-}
+
 //getters
 export const selectNoteContents = (state) => state.noteData.noteContents;
 export const selectNoteTitle = (state) => state.noteData.noteTitle;
