@@ -12,10 +12,9 @@ const Screen2 = () => {
 }
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    
+    backgroundColor: '#000000',
+    height: 10000000000,
   },
 });
 export default Screen2;

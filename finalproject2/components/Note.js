@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, StyleSheet, Pressable } from 'react-native'
 import React from 'react'
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
@@ -17,7 +17,7 @@ const Note = () => {
   const navigation = useNavigation();
   const headDisplay = () => {
     if(noteText.length === 0){
-      return <Text>Create Note</Text>
+      return <Text style={styles.title}>Create Note</Text>
     }
     else{
       return <Text>Create Note</Text>
@@ -27,15 +27,22 @@ const Note = () => {
   const newNote = () => {
     if(titleNote.length === 0){
       return  <View>
-                <Button title='Home' onPress={() => navigation.navigate('Screen1')}/> 
-                <Button title='Create' disabled />
+                <Pressable style={styles.button} onPress={() => navigation.navigate('Screen1')}>
+                    <Text>Home</Text>
+                 </Pressable>
+                <Pressable style={styles.button2} disabled>
+                    <Text>Create</Text>
+                 </Pressable>
                 
               </View>
     } 
     else{ 
       return <View>
-                 <Button title='Home' onPress={() => navigation.navigate('Screen1')}/> 
-                 <Button title='Create' onPress={() =>{
+                 
+                 <Pressable style={styles.button} onPress={() => navigation.navigate('Screen1')}>
+                    <Text>Home</Text>
+                 </Pressable>
+                 <Pressable style={styles.button} onPress={() =>{
                   dispatch(setNoteArray([{
                     title: titleNote,
                     note: noteText,
@@ -43,7 +50,10 @@ const Note = () => {
                   }]));
                   dispatch(setNoteContents(""))
                   dispatch(setNoteTitle(""))
-                 }}/>
+                 }}>
+                    <Text>Create</Text>
+                 </Pressable>
+                 
                  
              </View>
     } 
@@ -60,16 +70,16 @@ const Note = () => {
         {headDisplay()}
        
       </View>
-      <View>
-        <TextInput value={titleNote} disabled = {false} onChangeText={(newValue) => {
+      <View style={{backgroundColor:'#ffe4c4'}}>
+        <TextInput style={styles.noteTitle} value={titleNote} disabled = {false} onChangeText={(newValue) => {
           
           dispatch(setNoteTitle(newValue));
           
         }} placeholder="Untitled" 
         />
       </View>
-      <View>
-        <TextInput value={noteText} onChangeText = {(newValue) => {
+      <View style={{backgroundColor:'#ffe4c4'}}>
+        <TextInput style={styles.noteText} value={noteText} onChangeText = {(newValue) => {
           
           dispatch(setNoteContents(newValue));
           
@@ -83,4 +93,68 @@ const Note = () => {
   )
 }
 
-export default Note
+export default Note;
+
+const styles = StyleSheet.create({
+  container: {
+    
+    
+    backgroundColor: '#ffe4c4',
+    borderColor: '#000000',
+    borderStyle: 'solid',
+    borderWidth: 1,
+    margin: 10,
+    borderRadius: 8,
+    
+    
+  },
+  button:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    color: 'black',
+    elevation: 3,
+    backgroundColor: '#fff',
+    margin: 20,
+     
+     
+     
+  },
+  button2:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    color: 'grey',
+    elevation: 3,
+    backgroundColor: 'grey',
+    margin: 20,
+     
+     
+     
+  },
+  
+  title:{
+      fontSize: 30,
+      marginTop: 20,
+  },
+  noteText:{
+    marginLeft: 30,
+    marginBottom: 15,
+    fontSize: 16,
+  },
+  noteTitle: {
+    margin: 10,
+    fontSize: 20,
+    
+
+  },
+  warning:{
+    fontSize: 16,
+    
+  }
+
+});

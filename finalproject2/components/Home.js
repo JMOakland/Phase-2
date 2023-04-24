@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Pressable } from 'react-native'
+import React, { useState } from 'react'
 // useDispatch ~ reducers(setters)
 //useSelectors ~ selectors(getters)
 import { useDispatch } from 'react-redux';
@@ -11,7 +11,7 @@ import { Header } from 'react-native/Libraries/NewAppScreen';
 import { FlatList } from 'react-native';
 import { Button } from 'react-native';
 import { selectNoteContents, selectNoteTitle, selectNoteArray, setNoteArray } from '../slices/noteSlice';
-let homeArray =[];
+
 // from https://reactnative.dev/docs/flatlist
 const Item = ({item, onPress }) => (//add styling later(and remove this note!!)
   <TouchableOpacity style={styles.container} onPress={onPress} > 
@@ -21,25 +21,56 @@ const Item = ({item, onPress }) => (//add styling later(and remove this note!!)
 );
 
 const Home = () => {
-  
+  const [homeArray, setHomeArray] = useState({
+    newArray: [],});
   const noteArray = useSelector(selectNoteArray);
   const navigation = useNavigation();
-  
+  const dispatch = useDispatch();
   const setArray = () => {
-        if(noteArray.length !== 0 && !homeArray.includes(noteArray[0])){
-          homeArray.push(noteArray[0]);
+        if(noteArray.length !== 0 && (!(homeArray.newArray.includes(noteArray[0])))){
+          homeArray.newArray.push(noteArray[0]);
           
         }
-       // console.log(homeArray)
+       //console.log(homeArray.newArray)
   }
   const displayNotes = ({item}) =>{
     
     return (<Item 
         item={item}
-        onPress={() => {
-        
-        }
+        onPress={() => { 
           
+          
+          homeArray.newArray.forEach((note) => {
+          console.log(note.id)
+          console.log(item.id)
+          
+           if(note.id === item.id){
+              if(homeArray.newArray.length === 1){
+                dispatch(setNoteArray([]))
+                setHomeArray({
+                  newArray: [],
+                })
+                console.log('here')
+                
+              }
+            else{
+              const array2 = homeArray.newArray.filter((item) => item.id !== note.id);
+              console.log(array2)
+              dispatch(setNoteArray(array2)); 
+              setHomeArray({
+                newArray: array2})
+              //tempArray = homeArray.newArray.slice(0, note.id);
+              //console.log(tempArray)
+              //tempArray2 = homeArray.newArray.slice((note.id +1) , (homeArray.newArray.length + 1))
+              //console.log(tempArray2)
+              //setHomeArray({
+                //newArray: tempArray.concat(tempArray2)}
+              //console.log(homeArray)
+              }}
+    
+          })
+        
+        }   
         } >
       </Item>)
     
@@ -51,54 +82,39 @@ const Home = () => {
     }
     else{
       return <FlatList 
-                    data={homeArray} 
+                    data={homeArray.newArray} 
                     style={{height: 10000,}} 
                     renderItem={displayNotes} 
                     keyExtractor={item => item.id} 
               />
     }
   }
-  const deleteNote =(item) =>{
-    let tempArray =[]
-    let tempArray2 = []
-    
-    homeArray.forEach((note) => {
-      
-      if(note.id === item.id){
-        console.log(note.id)
-        tempArray = homeArray.slice(0, note.id);
-        console.log(tempArray)
-        tempArray2 = homeArray.slice((note.id +1) , (homeArray.length + 1))
-        console.log(tempArray2)
-        homeArray = tempArray.concat(tempArray2);
-        console.log(homeArray)
-      }
-      
-      
-    
-    })
-    return homeArray
-  }
+  
     
   
   const warning = ()=>{
-    if(!(homeArray.length ===0)){
-        return <Text style={styles.warning} >To delete a note, please press it. </Text>
+    if(homeArray.newArray.length === 0){
+      console.log(homeArray.newArray.length)
+      return <Text style={styles.warning} >Your notes will appear below. </Text>
     }
     else{
-      return <Text style={styles.warning} >Your notes will appear below. </Text>
+      
+      return <Text style={styles.warning} >To delete a note, please press it. </Text>
     }
   }
   return (
     <SafeAreaView>
       <View style={{backgroundColor:`#eee8aa`, alignItems: 'center', }}>
         <Text style={styles.title}> Welcome to StickyNotes4All!</Text>
-        <Button title='Create a Note' onPress={() => navigation.navigate('Screen2')} style= {styles.button} /> 
+        
+        <Pressable style={styles.button} onPress={() => navigation.navigate('Screen2')}>
+          <Text>Create a note</Text>
+        </Pressable>
         {warning()}
       </View>
-      {setArray()}
+        {setArray()}
       <View>
-         {setList()}
+        {setList()}
       </View>
       
       
@@ -121,16 +137,18 @@ const styles = StyleSheet.create({
     
     
   },
-  button:{
-    borderColor: '#000000',
-    backgroundColor:'#000000',
-    alignSelf: 'center',
-    borderRadius: 8,
-    borderCurve: 8,
-
+button: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 4,
+    color: 'black',
+    elevation: 3,
+    backgroundColor: '#fff',
+    margin: 20,
      
-     
-  },
+},
   
   title:{
       fontSize: 30,
